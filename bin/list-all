@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+echo $(
+  curl -sSf https://github.com/denoland/deno/releases | awk '/denoland\/deno\/releases\/download\/.*\/deno_osx_x64.gz/{sub(/^.*\/download\/v/,"");sub(/\/deno_osx_x64\.gz.*$/, "");print}'
+)

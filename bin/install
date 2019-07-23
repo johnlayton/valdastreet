@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -e
+
+install_deno() {
+    local install_type=$1
+    local install_version=$2
+    local install_path=$3
+
+    case $(uname -s) in
+    Darwin) os="osx" ;;
+    *) os="linux" ;;
+    esac
+
+    case $(uname -m) in
+    x86_64) arch="x86_64" ;;
+    *) arch="other" ;;
+    esac
+
+    if [ "$arch" = "other" ]; then
+        echo "Unsupported architecture $(uname -m). Only x64 binaries are available."
+        exit
+    fi
+
+    download="https://github.com/denoland/deno/releases/download/v${install_version}/deno_${os}_x64.gz"
+    filename="${install_path}/bin/deno"
+
+    if [ ! -d "${install_path}/bin" ]; then
+        mkdir -p "${install_path}/bin"
+    fi
+
+    curl -fL# -o "${filename}.gz" "${download}"
+    gunzip -d -f -v "${filename}.gz"
+    chmod +x "${filename}"
+}
+
+install_deno $ASDF_INSTALL_TYPE $ASDF_INSTALL_VERSION $ASDF_INSTALL_PATH
+
+asdf reshim deno "$ASDF_INSTALL_VERSION"
